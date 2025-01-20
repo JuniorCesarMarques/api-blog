@@ -16,7 +16,7 @@ const connectDatabase = (app) => {
       console.log("Conectado ao banco");
     })
     .catch((err) => {
-      console.log(err);
+      console.log("Deu erro e esta entrando aqui", err);
     });
 };
 
