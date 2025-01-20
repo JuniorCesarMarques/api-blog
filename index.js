@@ -5,6 +5,7 @@ const cors = require("cors");
 const connectDatabase = require("./database/db");
 
 const authRoutes = require("./routes/authRoutes");
+const postRoutes = require("./routes/postsRoutes");
 
 // instance
 const app = express();
@@ -23,6 +24,7 @@ app.use(
 );
 
 app.use("/auth", authRoutes);
+app.use("/posts", postRoutes);
 
 connectDatabase(app);
 
