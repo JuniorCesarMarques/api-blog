@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const port = process.env.DB_PORT;
+const port = process.env.PORT;
 
 // credentials
 const dbUser = process.env.DB_USER;
