@@ -26,4 +26,9 @@ app.use("/auth", authRoutes);
 
 connectDatabase(app);
 
+// Export the app as a serverless function
+module.exports = (req, res) => {
+  app(req, res);  // Chama o Express para lidar com a requisição e resposta
+};
+
 // 99644 1441
