@@ -22,9 +22,6 @@ app.use(
   })
 );
 
-// Middleware para lidar com preflight (opcional se cors está configurado corretamente)
-app.options('*', cors());
-
 app.use("/auth", authRoutes);
 
 connectDatabase(app);
