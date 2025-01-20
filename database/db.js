@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const express = require("express");
+const port = process.env.PORT;
 
 // credentials
 const dbUser = process.env.DB_USER;
@@ -12,7 +12,7 @@ const connectDatabase = (app) => {
       `mongodb+srv://${dbUser}:${dbPassword}@cluster0.ljhja.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
     )
     .then(() => {
-      app.listen(5000);
+      app.listen(port);
       console.log("Conectado ao banco");
     })
     .catch((err) => {
