@@ -72,7 +72,7 @@ module.exports = class {
       const token = getToken(req);
       const decoded = jwt.verify(token, "nossosecret");
 
-      const currentUser = await User.findById(decoded.id);
+      currentUser = await User.findById(decoded.id);
 
       currentUser.password = undefined;
     } else {
