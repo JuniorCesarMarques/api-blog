@@ -11,6 +11,8 @@ module.exports = class {
   static async register(req, res) {
     const { name, email, password, confirmPassword } = req.body;
 
+    console.log("Rota funcionando corretamente")
+    
     // Validations
     if (!name) {
       return res.status(422).json({ message: "O nome é obrigatório!" });
