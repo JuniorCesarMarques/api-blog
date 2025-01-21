@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const authController = require("../controllers/PostsController");
+const authController = require("../controllers/jsadnkas");
 
 router.get("/all-posts", authController.showAllPosts);
 
