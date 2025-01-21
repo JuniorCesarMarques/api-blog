@@ -80,6 +80,7 @@ module.exports = class {
     }
 
     res.status(200).send(currentUser);
+
   }
 
   static async login(req, res) {
