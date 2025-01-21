@@ -63,6 +63,25 @@ module.exports = class {
     }
   }
 
+  static async checkUser(req, res) {
+    let currentUser;
+
+    console.log(req.headers.authorization);
+
+    if(req.headers.authorization) {
+      const token = getToken(req);
+      const decoded = jwt.verify(token, "nossosecret");
+
+      const currentUser = await User.findById(decoded.id);
+
+      currentUser.password = undefined;
+    } else {
+      currentUser = null;
+    }
+
+    res.status(200).send(currentUser);
+  }
+
   static async login(req, res) {
     const { email, password } = req.body;
 
