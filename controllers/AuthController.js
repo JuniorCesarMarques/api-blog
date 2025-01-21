@@ -69,6 +69,7 @@ module.exports = class {
     let currentUser;
 
     console.log(req.headers.authorization);
+    console.log("Esta batendo na rota")
 
     if(req.headers.authorization) {
       const token = getToken(req);
