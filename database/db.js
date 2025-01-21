@@ -9,12 +9,7 @@ const dbPassword = process.env.DB_PASS;
 const connectDatabase = (app) => {
   mongoose
     .connect(
-      `mongodb+srv://${dbUser}:${dbPassword}@cluster0.ljhja.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 30000, // Aumente o timeout para 30 segundos
-      }
+      `mongodb+srv://${dbUser}:${dbPassword}@cluster0.ljhja.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
     )
     .then(() => {
       app.listen(port);
