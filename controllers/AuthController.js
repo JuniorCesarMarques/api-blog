@@ -15,8 +15,8 @@ module.exports = class {
     console.log("Rota funcionando corretamente")
     
     // Validations
-    if (!name) {
-      return res.status(422).json({ message: "O nome é obrigatório!" });
+    if (!name || name.length < 3) {
+      return res.status(422).json({ message: "Insira um nome valido!" });
     }
 
     if (!email || !email.match(/^\S+@\S+\.\S+$/)) {
