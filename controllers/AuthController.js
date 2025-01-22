@@ -19,12 +19,12 @@ module.exports = class {
       return res.status(422).json({ message: "O nome é obrigatório!" });
     }
 
-    if (!email) {
-      return res.status(422).json({ message: "O email é obrigatório!" });
+    if (!email || !email.match(/^\S+@\S+\.\S+$/)) {
+      return res.status(422).json({ message: "Insira um email válido!" });
     }
 
-    if (!password) {
-      return res.status(422).json({ message: "A senha é obrigatória!" });
+    if (!password || password.length < 8) {
+      return res.status(422).json({ message: "A senha deve ter no minimo 8 caracteres!" });
     }
 
     if (!confirmPassword) {
