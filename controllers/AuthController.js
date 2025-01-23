@@ -123,5 +123,7 @@ module.exports = class {
     if (!passwordMatch) {
       return res.status(422).json({ message: "As senhas não conferem!" });
     }
+
+    await createUserToken(user, req, res);
   }
 };
