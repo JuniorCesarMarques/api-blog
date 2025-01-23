@@ -80,7 +80,7 @@ module.exports = class {
           throw new Error("Token inválido ou malformado");
         }
 
-        console.log(decoded.id)
+        console.log(decoded)
   
         currentUser = await User.findById(decoded.id);
   
