@@ -79,6 +79,8 @@ module.exports = class {
         if (!decoded || !decoded.id) {
           throw new Error("Token inválido ou malformado");
         }
+
+        console.log(decoded.id)
   
         currentUser = await User.findById(decoded.id);
   
