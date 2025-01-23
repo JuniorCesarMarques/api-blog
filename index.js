@@ -10,7 +10,6 @@ const postRoutes = require("./routes/PostRoutes");
 // instance
 const app = express();
 
-
 // Config JSON response
 app.use(express.json());
 

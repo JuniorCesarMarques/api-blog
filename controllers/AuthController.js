@@ -68,23 +68,36 @@ module.exports = class {
 
   static async checkUser(req, res) {
     let currentUser;
-
-    console.log(req.headers.authorization);
-
-    if(req.headers.authorization) {
-      const token = getToken(req);
-      const decoded = jwt.verify(token, "nossosecret");
-
-      currentUser = await User.findById(decoded.id);
-
-      currentUser.password = undefined;
-    } else {
-      currentUser = null;
+  
+    try {
+      console.log(req.headers.authorization);
+  
+      if (req.headers.authorization) {
+        const token = getToken(req);
+        const decoded = jwt.verify(token, "nossosecret");
+  
+        if (!decoded || !decoded.id) {
+          throw new Error("Token inválido ou malformado");
+        }
+  
+        currentUser = await User.findById(decoded.id);
+  
+        if (!currentUser) {
+          throw new Error("Usuário não encontrado");
+        }
+  
+        currentUser.password = undefined;
+      } else {
+        currentUser = null;
+      }
+  
+      res.status(200).json({ currentUser });
+    } catch (error) {
+      console.error("Erro no checkUser:", error.message);
+      res.status(401).json({ message: error.message });
     }
-
-    res.status(200).send(currentUser);
-
   }
+  
 
   static async login(req, res) {
     const { email, password } = req.body;
