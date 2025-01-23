@@ -23,9 +23,19 @@ module.exports = class {
       return res.status(422).json({ message: "Insira um email válido!" });
     }
 
-    if (!password || password.length < 8) {
-      return res.status(422).json({ message: "A senha deve ter no minimo 8 caracteres!" });
+    if (!password) {
+      return res.status(422).json({ message: "A senha é obrigatória!" });
     }
+    
+    // Validando o comprimento mínimo e os critérios de segurança
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    
+    if (!passwordRegex.test(password)) {
+      return res.status(422).json({ 
+        message: "A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, um número e um caractere especial."
+      });
+    }
+    
 
     if (!confirmPassword) {
       return res.status(422).json({ message: "Confirme sua senha" });
@@ -126,4 +136,5 @@ module.exports = class {
 
     await createUserToken(user, req, res);
   }
+
 };
