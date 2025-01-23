@@ -70,7 +70,6 @@ module.exports = class {
     let currentUser;
   
     try {
-      console.log(req.headers.authorization);
   
       if (req.headers.authorization) {
         const token = getToken(req);
@@ -79,8 +78,6 @@ module.exports = class {
         if (!decoded || !decoded.id) {
           throw new Error("Token inválido ou malformado");
         }
-
-        console.log(decoded)
   
         currentUser = await User.findById(decoded.id);
   
