@@ -130,7 +130,7 @@ module.exports = class {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(422).json({ message: "As senhas não conferem!" });
+      return res.status(422).json({ message: "Senha inválida!" });
     }
 
     await createUserToken(user, req, res);
