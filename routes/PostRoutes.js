@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const authController = require("../controllers/PostController");
+const PostController = require("../controllers/PostController");
 
-router.get("/all-posts", authController.showAllPosts);
+// middlwares
+const checkAdmin = require("../helpers/check-admin");
+
+router.post("/create-post", checkAdmin, PostController.createPost);
 
 module.exports = router;
