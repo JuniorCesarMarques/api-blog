@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Solve CORS
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://autobrothers.com.br",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
