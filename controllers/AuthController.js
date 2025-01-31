@@ -8,6 +8,16 @@ const getUserByToken = require("../helpers/get-user-by-token");
 const getToken = require("../helpers/get-token");
 const createUserToken = require("../helpers/create-user-token");
 
+// google auth
+const { OAuth2Client } = require("google-auth-library");
+
+// Substitua pelo seu CLIENT_ID do Google Cloud
+const CLIENT_ID =
+  "250624763798-fddhjadj6cq46bpo1qs5cee4pdbs7d1j.apps.googleusercontent.com";
+
+// Inicialize o cliente OAuth2
+const googleClient = new OAuth2Client(CLIENT_ID);
+
 module.exports = class {
   static async register(req, res) {
     const { name, email, password, confirmPassword } = req.body;
@@ -77,35 +87,96 @@ module.exports = class {
     }
   }
 
+  //refatorar urgente!
   static async checkUser(req, res) {
-    let currentUser;
-
-    try {
-      if (req.headers.authorization) {
-        const token = getToken(req);
-        const decoded = jwt.verify(token, "nossosecret");
-
-        if (!decoded || !decoded.id || !decoded.role) {
-          throw new Error("Token inválido ou malformado");
+    let currentUser = null; // Default: usuário não encontrado ou não autenticado
+    let tokenType;
+  
+    console.log(req.headers)
+    // Verifica os cabeçalhos para determinar o tipo de token
+    if (req.headers.authorization && req.headers['tokentype']) {
+      const token = getToken(req);
+      tokenType = req.headers['tokentype']; // Pode ser 'google' ou 'jwt'
+  
+      
+      if (!token) {
+        return res.status(401).json({ message: "Token não fornecido" });
+      } 
+  
+      try {
+        if (tokenType === 'jwt') {
+          console.log("Tratando como JWT...");
+  
+          try {
+            const decoded = jwt.verify(token, "nossosecret");
+  
+            if (decoded && decoded.id && decoded.role) {
+              currentUser = await User.findById(decoded.id);
+  
+              if (currentUser) {
+                console.log("Usuário encontrado no banco de dados.");
+                currentUser.password = undefined; // Remove a senha por segurança
+              } else {
+                console.log(
+                  "Usuário não encontrado no banco de dados, mas mantendo o login ativo."
+                );
+                currentUser = {
+                  message: "Usuário não encontrado, mantendo sessão ativa",
+                };
+              }
+            } else {
+              console.log("JWT inválido ou malformado.");
+            }
+          } catch (jwtError) {
+            console.log("Falha ao verificar como JWT:", jwtError.message);
+          }
+  
+        } else if (tokenType === 'google') {
+          console.log("Tratando como token do Google...");
+  
+          try {
+            const ticket = await googleClient.verifyIdToken({
+              idToken: token,
+              audience: CLIENT_ID, // Substitua com seu client ID
+            });
+  
+            const payload = ticket.getPayload();
+            if (payload && payload.sub && payload.email) {
+              currentUser = await User.findOne({ email: payload.email });
+  
+              if (!currentUser) {
+                console.log(
+                  "Usuário do Google não encontrado, mas mantendo sessão ativa."
+                );
+                currentUser = {
+                  message: "Usuário não encontrado, mantendo sessão ativa",
+                };
+              } else {
+                console.log("Usuário do Google encontrado.");
+                currentUser.password = undefined; // Remove a senha por segurança
+              }
+            } else {
+              console.log("Token do Google inválido ou malformado.");
+            }
+          } catch (googleError) {
+            console.log("Falha ao verificar token do Google:", googleError.message);
+          }
+  
+        } else {
+          return res.status(400).json({ message: "Tipo de token inválido" });
         }
-
-        currentUser = await User.findById(decoded.id);
-
-        if (!currentUser) {
-          throw new Error("Usuário não encontrado");
-        }
-
-        currentUser.password = undefined;
-      } else {
-        currentUser = null;
+  
+        return res.status(200).json({ currentUser });
+  
+      } catch (error) {
+        console.error("Erro no checkUser:", error.message);
+        return res.status(401).json({ message: "Erro ao verificar token" });
       }
-
-      res.status(200).json({ currentUser });
-    } catch (error) {
-      console.error("Erro no checkUser:", error.message);
-      res.status(401).json({ message: error.message });
+    } else {
+      return res.status(400).json({ message: "Cabeçalhos de token ausentes" });
     }
   }
+  
 
   static async login(req, res) {
     const { email, password } = req.body;
